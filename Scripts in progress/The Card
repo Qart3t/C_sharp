@@ -1,0 +1,81 @@
+CardColor cardColor = CardColor.Yellow;
+CardRank cardRank = CardRank.Ampersant;
+
+int deckSize = (int)cardColor * (int)cardRank;
+
+Card[] cards = new Card[deckSize];
+
+void CreateDeck()
+{
+    CardColor cardColor1 = CardColor.Red;
+
+   foreach (int i in Enum.GetValues(typeof(CardRank)))
+    {
+    }
+}
+
+
+class Card
+{
+    private readonly CardRank cardRank = new CardRank();
+    private readonly CardColor cardColor = new CardColor();
+
+    public Card(CardRank cardRank, CardColor cardColor)
+    {
+        this.cardRank = cardRank;
+        this.cardColor = cardColor;
+    }
+
+    public CardType NumberOrSymbol()
+    {
+        CardType cardType;
+
+        if((int)cardRank<=10)
+        {
+            cardType = CardType.Number;
+        }
+        else
+        {
+            cardType = CardType.Symbol;
+        }
+
+        return cardType;
+    }
+}
+
+enum CardType
+{
+    Number,
+    Symbol
+}
+
+
+enum CardRank : int
+{
+    One = 1, 
+    Two = 2, 
+    Three = 3, 
+    Four = 4, 
+    Five = 5, 
+    Six = 6, 
+    Seven = 7, 
+    Eight = 8, 
+    Nine = 9, 
+    Ten = 10,
+    Dolar = 11,
+    Percent = 12,
+    Arrowup = 13,
+    Ampersant = 14
+
+}
+
+enum CardColor : int
+{
+    Red = 1,
+    Green = 2, 
+    Blue = 3,
+    Yellow = 4
+
+}
+
+//192
