@@ -1,0 +1,534 @@
+using TictactoeGame;
+
+
+TicTacToe ticTactoe = new();
+ticTactoe.Game();
+
+namespace TictactoeGame
+{
+    public class Map
+    {
+        private readonly bool[] xPositions = new bool[10];
+        private readonly bool[] oPositions = new bool[10];
+        private readonly XO[] xOs = new XO[10];
+
+        public Map()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                xPositions[i] = false;
+                oPositions[i] = false;
+            }
+
+        }
+
+        public bool[] GetXpositions()
+        {
+            return xPositions;
+        }
+
+        public bool[] GetOpositions()
+        {
+            return oPositions;
+        }
+
+        public void SetXPosition(byte x)
+        {
+            xPositions[(int)x] = true;
+        }
+
+        public void SetOPosition(byte o)
+        {
+            oPositions[(int)o] = true;
+        }
+
+        public bool GetXPosition(byte x)
+        {
+            if (xPositions[(int)x] == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool GetOPosition(byte o)
+        {
+            if (oPositions[(int)o] == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void Drawmap()
+        {
+            string firtRow = "";
+            string secoundRow = "";
+            string thridRow = "";
+            string map = "";
+
+            for (int i = 1; i < 10; i++)
+            {
+                if (xPositions[i] == true)
+                {
+                    xOs[i] = XO.X;
+                }
+
+                if (oPositions[i] == true)
+                {
+                    xOs[i] = XO.O;
+                }
+            }
+
+
+            if (xOs[1] != XO.None)
+            {
+                firtRow += ($" {xOs[1]} |");
+            }
+            else
+            {
+                firtRow += ($"   |");
+            }
+
+            if (xOs[2] != XO.None)
+            {
+                firtRow += ($" {xOs[2]} |");
+            }
+            else
+            {
+                firtRow += ($"   |");
+            }
+
+            if (xOs[3] != XO.None)
+            {
+                firtRow += ($" {xOs[3]} ");
+            }
+            else
+            {
+                firtRow += ($"   ");
+            }
+
+            map += firtRow;
+            map += "\n-----------";
+
+            if (xOs[4] != XO.None)
+            {
+                secoundRow += ($" {xOs[4]} |");
+            }
+            else
+            {
+                secoundRow += ($"   |");
+            }
+
+            if (xOs[5] != XO.None)
+            {
+                secoundRow += ($" {xOs[5]} |");
+            }
+            else
+            {
+                secoundRow += ($"   |");
+            }
+
+            if (xOs[6] != XO.None)
+            {
+                secoundRow += ($" {xOs[6]} ");
+            }
+            else
+            {
+                secoundRow += ($"   ");
+            }
+
+            map += "\n" + secoundRow;
+            map += "\n" +"-----------";
+
+            if (xOs[7] != XO.None)
+            {
+                thridRow += ($" {xOs[7]} |");
+            }
+            else
+            {
+                thridRow += ($"   |");
+            }
+
+            if (xOs[8] != XO.None)
+            {
+                thridRow += ($" {xOs[8]} |");
+            }
+            else
+            {
+                thridRow += ($"   |");
+            }
+
+            if (xOs[9] != XO.None)
+            {
+                thridRow += ($" {xOs[9]} ");
+            }
+            else
+
+            {
+                thridRow += ($"   ");
+            }
+
+            map += "\n" + thridRow;
+            Console.WriteLine(map);
+
+        }
+    }
+
+    public class GameLogic
+    {
+        Map map = new();
+        private bool xTurn = true;
+
+        public void Game()
+        {
+            for (byte turn = 0; turn < 10; turn++)
+            {
+                if (turn < 5)
+                {
+                    Interface();
+                    byte targetet = Convert.ToByte(Console.ReadLine());
+
+                    bool xpos = map.GetXPosition(targetet);
+                    bool opos = map.GetOPosition(targetet);
+
+                    if (xTurn == true)
+                    {
+                        for (; ; )
+                        {
+
+                            if (opos == false && xpos == false)
+                            {
+                                map.SetXPosition(targetet);
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Wrong position");
+                                targetet = Convert.ToByte(Console.ReadLine());
+                                xpos = map.GetXPosition(targetet);
+                                opos = map.GetOPosition(targetet);
+
+                            }
+                        }
+
+
+                        xTurn = false;
+                    }
+                    else
+                    {
+                        for (; ; )
+                        {
+                            if (opos == false && xpos == false)
+                            {
+                                map.SetOPosition(targetet);
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Wrong position");
+                                targetet = Convert.ToByte(Console.ReadLine());
+                                xpos = map.GetXPosition(targetet);
+                                opos = map.GetOPosition(targetet);
+
+                            }
+
+                        }
+                        xTurn = true;
+
+                    }
+                }
+                else if (turn < 9)
+                {
+                    Interface();
+                    byte winStatus = CheckForWin();
+
+                    if (winStatus == 2)
+                    {
+                        Console.WriteLine("\nX won!!!");
+                        break;
+                    }
+                    else if (winStatus == 1)
+                    {
+                        Console.WriteLine("\nO won!!!");
+                        break;
+                    }
+                    else
+                    {
+                        byte targetet = Convert.ToByte(Console.ReadLine());
+
+                        bool xpos = map.GetXPosition(targetet);
+                        bool opos = map.GetOPosition(targetet);
+
+                        if (xTurn == true)
+                        {
+                            for (; ; )
+                            {
+
+                                if (opos == false && xpos == false)
+                                {
+                                    map.SetXPosition(targetet);
+                                    break;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Wrong position");
+                                    targetet = Convert.ToByte(Console.ReadLine());
+                                    xpos = map.GetXPosition(targetet);
+                                    opos = map.GetOPosition(targetet);
+
+                                }
+                            }
+
+
+                            xTurn = false;
+                        }
+                        else
+                        {
+                            for (; ; )
+                            {
+                                if (opos == false && xpos == false)
+                                {
+                                    map.SetOPosition(targetet);
+                                    break;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Wrong position");
+                                    targetet = Convert.ToByte(Console.ReadLine());
+                                    xpos = map.GetXPosition(targetet);
+                                    opos = map.GetOPosition(targetet);
+
+                                }
+
+                            }
+                            xTurn = true;
+
+                        }
+
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("\n");
+                    Console.Clear();
+                    byte winStatus = CheckForWin();
+
+
+                    map.Drawmap();
+                    if (winStatus == 2)
+                    {
+                        Console.WriteLine("\nX won!!!");
+                    }
+                    else if (winStatus == 1)
+                    {
+                        Console.WriteLine("\nO won!!!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nBoard full, noone won");
+                    }
+
+                }
+
+            }
+        }
+
+
+        public void Interface()
+        {
+            Console.Clear();
+            if (xTurn == true)
+            {
+                Console.WriteLine("X turn\n");
+            }
+            else
+            {
+                Console.WriteLine("O turn\n");
+            }
+
+            Console.WriteLine("Chose position");
+            Console.WriteLine("1. Top left");
+            Console.WriteLine("2. Top mid");
+            Console.WriteLine("3. Top right");
+            Console.WriteLine("4. Mid left");
+            Console.WriteLine("5. Mid mid");
+            Console.WriteLine("6. Mid right");
+            Console.WriteLine("7. Bot left");
+            Console.WriteLine("8. Bot mid");
+            Console.WriteLine("9. Bot right\n");
+
+            map.Drawmap();
+        }
+
+        public byte CheckForWin()
+        {
+            bool[] xPositions = map.GetXpositions();
+
+            bool[] oPositions = map.GetOpositions();
+
+            if (xPositions[1] == true && xPositions[2] == true && xPositions[3] == true)
+            {
+                return 2;
+            }
+            else if (oPositions[1] == true && oPositions[2] == true && oPositions[3] == true)
+            {
+                return 1;
+            }
+            else if (xPositions[4] == true && xPositions[5] == true && xPositions[6] == true)
+            {
+                return 2;
+            }
+            else if (oPositions[4] == true && oPositions[5] == true && oPositions[6] == true)
+            {
+                return 1;
+            }
+            else if (xPositions[7] == true && xPositions[8] == true && xPositions[9] == true)
+            {
+                return 2;
+            }
+            else if (oPositions[7] == true && oPositions[8] == true && oPositions[9] == true)
+            {
+                return 1;
+            }
+            else if (xPositions[1] == true && xPositions[4] == true && xPositions[7] == true)
+            {
+                return 2;
+            }
+            else if (oPositions[1] == true && oPositions[4] == true && oPositions[7] == true)
+            {
+                return 1;
+            }
+            else if (xPositions[2] == true && xPositions[5] == true && xPositions[8] == true)
+            {
+                return 2;
+            }
+            else if (oPositions[2] == true && oPositions[5] == true && oPositions[8] == true)
+            {
+                return 1;
+            }
+            else if (xPositions[3] == true && xPositions[6] == true && xPositions[9] == true)
+            {
+                return 2;
+            }
+            else if (oPositions[3] == true && oPositions[6] == true && oPositions[9] == true)
+            {
+                return 1;
+            }
+            else if (xPositions[1] == true && xPositions[5] == true && xPositions[9] == true)
+            {
+                return 2;
+            }
+            else if (oPositions[1] == true && oPositions[5] == true && oPositions[9] == true)
+            {
+                return 1;
+            }
+            else if (xPositions[7] == true && xPositions[5] == true && xPositions[3] == true)
+            {
+                return 2;
+            }
+            else if (oPositions[7] == true && oPositions[5] == true && oPositions[3] == true)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public void NewMap()
+        {
+            map = new Map();
+        }
+    }
+
+    public class TicTacToe
+    {
+        
+        readonly GameLogic gameLogic = new();
+        public void Game()
+        {
+            Console.Title = "Tic tac toe ";
+            Console.WriteLine("Menu\n");
+            Console.WriteLine("1. Tic tac toe");
+            Console.WriteLine("2. Graphics setting");
+            Console.WriteLine("3. Author");
+            Console.WriteLine("4. Exit");
+
+            byte chose = Convert.ToByte(Console.ReadLine());
+
+            MenuLogic(chose);
+        }
+
+        public void MenuLogic(byte _chose)
+        {
+            if (_chose == 1)
+            {
+                for (; ; )
+                {
+                    gameLogic.Game();
+                    Console.WriteLine("\nPlay again? yes/no");
+                    string? yesorno = Console.ReadLine();
+                    Console.Clear();
+
+                    if (yesorno == "yes")
+                    {
+                        gameLogic.NewMap();
+
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                Game();
+
+            }
+            else if (_chose == 2)
+            {
+                Console.Clear();
+                Console.WriteLine("4K ultra hd\n");
+                Console.WriteLine("Type 'back' to return to menu");
+                string? back = Console.ReadLine();
+
+                if (back == "back")
+                {
+                    Console.Clear();
+                    Game();
+                }
+            }
+            else if (_chose == 3)
+            {
+                Console.Clear();
+                Console.WriteLine("Qartet\n");
+                Console.WriteLine("Type 'back' to return to menu");
+                string? back = Console.ReadLine();
+
+                if (back == "back")
+                {
+                    Console.Clear();
+                    Game();
+                }
+            }
+            else if(_chose == 4)
+            {
+            }
+        }
+
+    }
+
+    enum XO
+    {
+        None,
+        X,
+        O
+    }
+}
