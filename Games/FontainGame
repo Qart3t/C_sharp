@@ -1,0 +1,856 @@
+using Fountaingame;
+
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        FontainGame fontainGame = new FontainGame();
+        fontainGame.StartGame();
+
+    }
+}
+
+public abstract class PlayerCommand
+{
+    int commandID;
+
+    public abstract void Command(Player player);
+
+    public PlayerCommand()
+    {
+        commandID = 0;
+    }
+
+    public PlayerCommand(int commandID)
+    {
+        this.commandID = commandID;
+    }   
+}
+
+public class MoveWest : PlayerCommand
+{
+    public MoveWest()
+        :base(1)
+    {
+
+    }
+
+    public override void Command(Player player)
+    {
+       player.AddToPositionX(-1);
+    }
+}
+
+public class MoveEast : PlayerCommand
+{
+    public MoveEast()
+        : base(2)
+    {
+
+    }
+
+    public override void Command(Player player)
+    {
+        player.AddToPositionX(1);
+    }
+}
+
+public class MoveNorth : PlayerCommand
+{
+    public MoveNorth()
+        : base(3)
+    {
+
+    }
+
+    public override void Command(Player player)
+    {
+        //Its logical incorrect but logical for game logic
+        player.AddToPositionY(-1);
+    }
+}
+
+public class MoveSouth : PlayerCommand
+{
+    public MoveSouth()
+        : base(4)
+    {
+
+    }
+
+    public override void Command(Player player)
+    {
+        //Its logical incorrect but logical for game logic
+        player.AddToPositionY(1);
+    }
+}
+
+public class HoldPosition : PlayerCommand
+{
+    public HoldPosition()
+        : base(5)
+    {
+
+    }
+
+    public override void Command(Player player)
+    {
+        //Hold Position
+    }
+}
+
+public class Player
+{
+    private PlayerCommand? playerCommand;
+    private int playerPosX;
+    private int playerPosY;
+    bool isAlive;
+    bool isEscaped;
+
+    public void SetPlayerPosition(int x,int y)
+    {
+        this.playerPosX = x;
+        this.playerPosY = y;
+    }
+
+    public void IsEscaped(bool _isEscaped)
+    {
+        this.isEscaped = _isEscaped;
+    }
+
+    public void SetIsAlive(bool _isAlive)
+    {
+        this.isAlive = _isAlive;
+    }
+
+    public bool GetIsAlive()
+    {
+        return this.isAlive;
+    }
+
+    public int GetXPos()
+    {
+        return playerPosX;
+    }
+
+    public int GetYPos()
+    {
+        return playerPosY;
+    }
+
+    public void SetXPosition(int i)
+    {
+        this.playerPosX = i;
+    }
+
+    public void SetYPosition(int i)
+    {
+        this.playerPosY = i;
+    }
+
+    public void AddToPositionX(int x)
+    {
+        playerPosX += x;
+    }
+
+    public void AddToPositionY(int y)
+    {
+        playerPosY += y;
+    }
+
+    public void SetPlayerCommand(PlayerCommand? playerCommand)
+    {
+        this.playerCommand = playerCommand;
+    }
+
+    public Player()
+    {
+        this.playerPosX = 0;
+        this.playerPosY = 0;
+        this.isAlive = true;
+        this.isEscaped = false;
+    }
+    public Player(int posX, int posY)
+    {
+        this.playerPosX = posX;
+        this.playerPosY = posY;
+        this.isAlive = true;
+        this.isEscaped = false;
+    }
+
+    public PlayerCommand? PlayerCommand { get { return playerCommand; } }
+    public void SetCommand(PlayerCommand _playerComand)
+    {
+        playerCommand = _playerComand;
+    }
+
+    public void OperateCommand()
+    {
+        if (playerCommand != null)
+        {
+            playerCommand.Command(this);
+
+        }
+        else
+        {
+            System.Console.WriteLine("No command");
+        }
+    }
+
+    public void PlayerInterface()
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Player position x: {GetXPos()}, y: {GetYPos()}");
+
+        Console.WriteLine("Chose command: ");
+        Console.WriteLine("1. Move West");
+        Console.WriteLine("2. Move East");
+        Console.WriteLine("3. Move North");
+        Console.WriteLine("4. Move South");
+
+        int chose = Convert.ToInt32(Console.ReadLine());
+
+        switch (chose)
+        {
+            case 1:
+
+                SetCommand(new MoveWest());
+                OperateCommand();
+                break;
+            case 2:
+                SetCommand(new MoveEast());
+                OperateCommand();
+                break;
+            case 3:
+                SetCommand(new MoveNorth());
+                OperateCommand();
+                break;
+            case 4:
+                SetCommand(new MoveSouth());
+                OperateCommand();
+                break;
+            default:
+                SetCommand(new HoldPosition());
+                break;
+        }
+    }
+
+}
+
+public class EmptyRoom
+{
+     private int roomPositionX;
+     private int roomPositionY;
+     private int roomID;
+
+    public int GetroomID()
+    {
+        return this.roomID;
+    }
+
+     public EmptyRoom(int roomPositionX, int roomPositionY,int roomID)
+     {
+     this.roomPositionX = roomPositionX;
+     this.roomPositionY = roomPositionY;
+     this.roomID = roomID;
+     }
+
+     public void RoomContent(Player player)
+    {
+        Console.WriteLine("This room is empty");
+    }
+
+}
+
+public static class DrawRoom
+{
+    public static void RoomTexture(int mapWidth,int mapHeight,int playerX,int playerY)
+    {
+
+        for (int x = 0; x < mapWidth; x++)
+        {
+            Console.Write("-----");
+        }
+
+        for (int y=0;y<mapHeight;y++)
+        {
+            Console.WriteLine();
+
+            for (int x = 0; x < mapWidth; x++)
+            {
+                if(playerX == x && playerY == y)
+                {
+                    Console.Write("| X |");
+                }
+                else
+                {
+                    Console.Write("|   |");
+                }
+
+            }
+
+            Console.WriteLine();
+
+            for (int x = 0; x < mapWidth; x++)
+            {
+                Console.Write("-----");
+            }
+        }
+
+    }
+
+}
+
+public class FountainnRoom : EmptyRoom
+{
+    public FountainnRoom(int x, int y)
+        : base(x, y,10)
+    {
+    }
+
+    new public virtual void RoomContent(Player player)
+    {
+        player.IsEscaped(true);
+    }
+}
+
+public class TrapRoom : EmptyRoom
+{
+    public TrapRoom(int x, int y)
+        : base(x, y,2)
+    {
+
+    }
+
+    new public virtual void RoomContent(Player player)
+    {
+        player.SetIsAlive(false);
+    }
+}
+
+public sealed class Map
+{
+    private int mapXSize;
+    private int mapYSize;
+    private EmptyRoom[,] rooms;
+    private Player player;
+
+    public Map(int _xSize,int _ySize)
+    {
+        this.mapXSize = _xSize;
+        this.mapYSize = _ySize;
+        this.player = new Player((int)(mapXSize/2),(int)(mapYSize/2));
+        rooms = new EmptyRoom[_xSize, _ySize];
+
+        for(int x = 0;x< mapXSize;x++) 
+        {
+            for (int y = 0; y < mapYSize; y++)
+            {
+                rooms[x, y] = new EmptyRoom(x,y,1);
+            }
+        }
+
+    }
+
+    public void DoPlayerLive(bool IsALive)
+    {
+        player.SetIsAlive(IsALive);
+    }
+
+    public int GetXPlayerPositionOnMap()
+    {
+        return player.GetXPos();
+    }
+
+    public int GetYPlayerPositionOnMap()
+    {
+        return player.GetYPos();
+    }
+
+    public int GetRoomAtPosition(int x,int y)
+    {
+        return rooms[x,y].GetroomID();
+    }
+
+    public void SetPlayerPositionToStart()
+    {
+        player.SetPlayerPosition((int)(mapXSize / 2), (int)(mapYSize / 2));
+    }
+
+    public bool PlayerAlive()
+    {
+        return player.GetIsAlive();
+    }
+
+    public void PlayerMovmentOnMapMenager()
+    {
+        player.PlayerInterface();
+
+        for(; ; )
+        {
+            if (player.GetXPos() < 0 || player.GetYPos() < 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Player cant escape in that way");
+                Console.WriteLine();
+
+                if (player.GetXPos() < 0)
+                {
+                    player.SetXPosition(0);
+                }
+                else
+                {
+                    player.SetYPosition(0);
+                }
+
+            player.PlayerInterface();
+                
+
+            }
+            else if (player.GetXPos() > mapXSize-1 || player.GetYPos() > mapXSize-1)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Player cant escape in that way");
+                Console.WriteLine();
+
+                if (player.GetXPos() > mapXSize)
+                {
+                    player.SetXPosition(mapXSize-1);
+                }
+                else
+                {
+                    player.SetYPosition(mapYSize-1);
+                }
+
+                player.PlayerInterface();
+            }
+            else
+            {
+                break;
+            }
+        }
+
+    }
+
+
+
+    public void CreateEasyDifficultyMap()
+    {
+        int noumberOfTrapRoomonEasyMap = ((int)((mapXSize * mapYSize) / 10))+1;
+        CreateFountain();
+
+        Console.WriteLine(noumberOfTrapRoomonEasyMap);
+
+        for (int x = 0; x< noumberOfTrapRoomonEasyMap; x++)
+        {
+            CreateTrapRoom();
+        }
+
+    }
+
+    public void CreateMediumDifficultyMap()
+    {
+        int noumberOfTrapRoomonEasyMap = ((int)((mapXSize * mapYSize) / 5)) + 1;
+        CreateFountain();
+
+        Console.WriteLine(noumberOfTrapRoomonEasyMap);
+
+        for (int x = 0; x < noumberOfTrapRoomonEasyMap; x++)
+        {
+            CreateTrapRoom();
+        }
+
+    }
+
+    public void CreateHardDifficultyMap()
+    {
+        int noumberOfTrapRoomonEasyMap = ((int)((mapXSize * mapYSize) / 3)) + 1;
+        CreateFountain();
+
+        Console.WriteLine(noumberOfTrapRoomonEasyMap);
+
+        for (int x = 0; x < noumberOfTrapRoomonEasyMap; x++)
+        {
+            CreateTrapRoom();
+        }
+
+    }
+
+    public void CreateImpossibleDifficultyMap()
+    {
+        int noumberOfTrapRoomonEasyMap = ((int)((mapXSize * mapYSize) / 2)) + 1;
+        CreateFountain();
+
+        Console.WriteLine(noumberOfTrapRoomonEasyMap);
+
+        for (int x = 0; x < noumberOfTrapRoomonEasyMap; x++)
+        {
+            CreateTrapRoom();
+        }
+
+    }
+
+    public void CreateFountain()
+    {
+        Random rnd = new Random();
+
+        int x = rnd.Next(mapXSize);
+        int y = rnd.Next(mapYSize);
+
+        for (; ; )
+        {
+            if (x != player.GetXPos() && y != player.GetYPos())
+            {
+                break;
+            }
+            else
+            {
+                x = rnd.Next(mapXSize);
+                y = rnd.Next(mapYSize);
+            }
+        }
+
+        rooms[x,y] = new FountainnRoom(x,y);    
+    }
+
+    void CreateTrapRoom()
+    {
+
+        Random rnd = new Random();
+
+        int x = rnd.Next(mapXSize);
+        int y = rnd.Next(mapYSize);
+
+
+        for (; ; )
+            {
+                if (x != player.GetXPos() && y != player.GetYPos() && GetRoomAtPosition(x, y) == 1)
+                {
+                break;
+                }
+                else
+                {
+                    x = rnd.Next(mapXSize);
+                    y = rnd.Next(mapYSize);
+                }
+            }
+
+            rooms[x, y] = new TrapRoom(x, y);
+
+    }
+
+    public void DrowMap()
+    {
+        DrawRoom.RoomTexture(mapXSize, mapYSize,player.GetXPos(),player.GetYPos());
+    }
+
+}
+
+public sealed class GameLogic
+{
+    private Map map;
+    private bool IsPlayerWon;
+
+    public GameLogic()
+    {
+        this.IsPlayerWon = false;
+
+        Console.WriteLine("Type The map width: ");
+
+        int x = Convert.ToInt32(Console.ReadLine());
+
+        while(x<3) 
+        {
+            Console.WriteLine("Wrong input, min value 3 ");
+            x = Convert.ToInt32(Console.ReadLine());
+        }
+
+        Console.WriteLine("Type The map height: ");
+        int y = Convert.ToInt32(Console.ReadLine());
+
+        while(y < 3)
+        {
+            Console.WriteLine("Wrong input, min value 3 ");
+            y = Convert.ToInt32(Console.ReadLine());
+        }
+
+        map = new Map(x,y);
+
+        Console.Clear();
+
+        ChoseDifficultyMenu();
+
+        Console.Clear();
+
+    }
+
+    public void ChoseDifficultyMenu()
+    {
+        Console.WriteLine("Chose difficulty");
+        Console.WriteLine("1. Easy");
+        Console.WriteLine("2. Medium");
+        Console.WriteLine("3. Hard");
+        Console.WriteLine("4. Impossible");
+
+        int chose = Convert.ToInt32(Console.ReadLine());
+
+        while (chose < 1 || chose > 4) 
+        {
+            Console.WriteLine("Wrong input");
+            chose = Convert.ToInt32(Console.ReadLine());
+        }
+
+        switch(chose)
+        {
+            case 1:
+                map.CreateEasyDifficultyMap();
+                break;
+            case 2:
+                map.CreateMediumDifficultyMap();
+                break;
+            case 3:
+                map.CreateHardDifficultyMap();
+                break;
+            case 4:
+                map.CreateImpossibleDifficultyMap();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void Game()
+    {
+
+        for (int gameRound = 1 ;; gameRound++)
+        {
+            Console.Clear();
+
+            if (gameRound > 1)
+            {
+                PlaterInteractionWithRoom();
+
+                if (IsPlayerWon == true)
+                {
+                    break;
+                }
+
+            }
+
+            if (map.PlayerAlive()==true && IsPlayerWon==false)
+            {
+                map.DrowMap();
+                PlayerMovmeny();
+            }
+            else if (map.PlayerAlive() == false)
+            {
+                DoYouWannaPlayAagain();
+            }
+
+            if(IsPlayerWon==true)
+            {
+                DoYouWannaPlayAagain();
+            }
+
+        }
+
+    }
+
+    public void DoYouWannaPlayAagain()
+    {
+        if(map.PlayerAlive() == true)
+        {
+            Console.WriteLine("You won, do you wanna play again? y/n");
+
+            string? yesno = Console.ReadLine();
+
+            if(yesno == "y")
+            {
+                Console.WriteLine("Type The map width: ");
+
+                int x = Convert.ToInt32(Console.ReadLine());
+
+                while (x < 3)
+                {
+                    Console.WriteLine("Wrong input, min value 3 ");
+                    x = Convert.ToInt32(Console.ReadLine());
+                }
+
+                Console.WriteLine("Type The map height: ");
+                int y = Convert.ToInt32(Console.ReadLine());
+
+                while (y < 3)
+                {
+                    Console.WriteLine("Wrong input, min value 3 ");
+                    y = Convert.ToInt32(Console.ReadLine());
+                }
+
+                map = new Map(x, y);
+                Game();
+
+            }
+            else if(yesno == "n")
+            {
+
+            }
+                    
+        }
+        else if (map.PlayerAlive() == false)
+        {
+            Console.WriteLine("Do you wanna play again? y/n");
+
+            string? yesno = Console.ReadLine();
+
+            if(yesno == "y") 
+            { 
+                map.SetPlayerPositionToStart();
+                map.DoPlayerLive(true);
+                Game();
+            }
+            else if (yesno == "n")
+            {
+
+            }
+
+        }
+    }
+
+    public void PlayerMovmeny()
+    {
+        map.PlayerMovmentOnMapMenager();
+    }
+
+    public void PlaterInteractionWithRoom()
+    {
+        int x = map.GetXPlayerPositionOnMap();
+        int y = map.GetYPlayerPositionOnMap();
+
+        if(map.GetRoomAtPosition(x,y)==1)
+        {
+            Console.WriteLine("Empty room, nothing to do here");
+        }
+        else if (map.GetRoomAtPosition(x, y) == 10)
+        {
+            Console.WriteLine("Congratulation, you won");
+            Console.WriteLine($"You found fontain at coordinate");
+            PlayerWonHandle();
+        }
+        else if (map.GetRoomAtPosition(x, y) == 2)
+        {
+            Console.WriteLine("You lose, try again");
+            PlayerDeadHandle();
+        }
+
+    }
+
+    public void PlayerWonHandle()
+    {
+        IsPlayerWon = true;
+    }
+
+    public void PlayerDeadHandle()
+    {
+        map.DoPlayerLive(false);
+    }
+
+}
+
+
+
+public sealed class MainMenu
+    {
+        private GameLogic? gameLogic;
+
+
+        public void GameMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("Menu");
+            Console.WriteLine();
+            Console.WriteLine("1. Play Game");
+            Console.WriteLine("2. Options");
+            Console.WriteLine("3. Author");
+            Console.WriteLine("4. Exit");
+
+            int chose = Convert.ToInt32(Console.ReadLine());
+
+            switch (chose)
+            {
+                case 1:
+                    Console.Clear();
+                    gameLogic = new GameLogic();
+                    gameLogic.Game();
+                    DoYouWannaBackToGameMenu();
+                    break;
+
+                case 2:
+                    Console.Clear();
+                    Options();
+                    DoYouWannaBackToGameMenu();
+                    break;
+
+                case 3:
+                    Console.Clear();
+                    Author();
+                    DoYouWannaBackToGameMenu();
+                    break;
+
+                case 4:
+                    Exit();
+                    break;
+            }
+        }
+
+        public void DoYouWannaBackToGameMenu()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("Back to menu? y/n");
+
+            string? yesno = Console.ReadLine();
+
+            if (yesno == "y")
+            {
+                GameMenu();
+            }
+            else if (yesno == "n")
+            {
+
+            }
+        }
+
+        public void Options()
+        {
+            Console.WriteLine("4k ultra hd");
+        }
+
+        public void Author()
+        {
+            Console.WriteLine("Author: Qartet");
+        }
+
+        public void Exit()
+        {
+            Environment.Exit(0);
+    }
+
+}
+
+namespace Fountaingame
+{
+    public sealed class FontainGame
+    {
+        private MainMenu menu;
+
+        public FontainGame()
+        {
+            menu = new MainMenu();
+        }
+
+        public void StartGame()
+        {
+            menu.GameMenu();
+        }
+
+    }
+
+}
