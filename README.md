@@ -1,1 +1,1 @@
-# C_sharp skripts
+# C_sharp scripts
